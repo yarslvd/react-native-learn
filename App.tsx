@@ -1,31 +1,67 @@
 import React from 'react';
-import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from "@react-native-masked-view/masked-view";
+import FlashMessage, {showMessage} from 'react-native-flash-message';
+import { useState } from 'react';
 
-import {ReactSvg} from "./src/components/ReactSvg.tsx";
+import {ReactSvg} from './src/components/ReactSvg.tsx';
+import {TextMask} from './src/components/TextMask.tsx';
+import {CameraComponent} from './src/components/Camera.tsx';
+import { Storage } from './src/components/Storage.tsx';
+import { BottomSheetComponent } from './src/components/BottomSheet.tsx';
+import { Counter } from './src/components/Counter.tsx';
 
 function App(): React.JSX.Element {
+  const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+
+  const handleFlashMessage = () => {
+    showMessage({
+      message: 'Testing library successful',
+      type: 'success',
+    });
+  };
+
+  const handleCameraOpen = () => {
+    setCameraOpen(prev => !prev);
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <LinearGradient colors={['#8360c3', '#2ebf91']} style={styles.gradient} useAngle={true} angle={45}>
-        <Text style={styles.quicksandBold}>Hello World!</Text>
-        <ReactSvg/>
-        <MaskedView
-          style={{flexDirection: 'row', height: '100%' }}
-          maskElement={
-            <View style={styles.mask}>
-              <Text style={styles.maskedText}>ITS MASK</Text>
-            </View>
-          }>
-          {/*<View style={{ flex: 1, height: '100%', backgroundColor: '#F5DD90' }} />*/}
-          <Image
-            source={{uri: 'https://images.unsplash.com/photo-1558244661-d248897f7bc4?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}}
-            style={{width: '100%', height: '100%'}}
-          />
-        </MaskedView>
-      </LinearGradient>
+      <View style={{flex: 1, position: 'relative'}}>
+      {cameraOpen && <CameraComponent cameraOpen={cameraOpen} setCameraOpen={setCameraOpen} />}
+        <LinearGradient
+          colors={['#8360c3', '#2ebf91']}
+          style={styles.gradient}
+          useAngle={true}
+          angle={45}>
+          <ScrollView contentContainerStyle={{flexGrow: 1, position: "absolute" }}>
+            {/* <Storage /> */}
+            <ReactSvg />
+            <ReactSvg />
+            <ReactSvg />
+            <ReactSvg />
+            <ReactSvg />
+            <ReactSvg />
+            <TextMask />
+            {/* <Button
+              onPress={handleFlashMessage}
+              title="Test Flash Message"
+              color="#841584"
+            /> */}
+            <Button onPress={handleCameraOpen} title="Open Camera" />
+            <Counter />
+          </ScrollView>
+        </LinearGradient>
+      </View>
+      {/* <BottomSheetComponent /> */}
+      <FlashMessage position="top" />
     </SafeAreaView>
   );
 }
@@ -34,23 +70,13 @@ const styles = StyleSheet.create({
   quicksandBold: {
     fontFamily: 'Quicksand-Bold',
     textAlign: 'center',
-    fontSize: 50
+    fontSize: 30,
   },
   gradient: {
     width: '100%',
-    flex: 1
-  },
-  maskedText: {
-    fontSize: 70,
-    color: 'black',
-    fontWeight: '900',
-  },
-  mask: {
-    backgroundColor: 'transparent',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
+    position: 'relative'
+  },
+});
 
 export default App;
